@@ -1,14 +1,13 @@
 package com.fc_board.service;
 
+import com.fc_board.exception.post.PostNotFoundException;
 import com.fc_board.model.Post;
 import com.fc_board.model.PostPatchRequestBody;
 import com.fc_board.model.PostRequestBody;
 import com.fc_board.model.entity.PostEntity;
 import com.fc_board.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -25,7 +24,7 @@ public class PostService {
 
     public Post getPostByPostId(Long postId) {
         var optionalPost = postRepository.findById(postId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
+                .orElseThrow(() -> new PostNotFoundException(postId));
         return Post.from(optionalPost);
     }
 
@@ -40,7 +39,7 @@ public class PostService {
 
     public Post updatePost(Long postId, PostPatchRequestBody patchRequestBody) {
         var entity = postRepository.findById(postId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
+                .orElseThrow(() -> new PostNotFoundException(postId));
         entity.setBody(patchRequestBody.body());
         var updateEntity = postRepository.save(entity);
         return Post.from(updateEntity);
@@ -48,7 +47,7 @@ public class PostService {
 
     public void deletePost(Long postId) {
         var entity = postRepository.findById(postId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Post not found"));
+                .orElseThrow(() -> new PostNotFoundException(postId));
         postRepository.delete(entity);
     }
 }
