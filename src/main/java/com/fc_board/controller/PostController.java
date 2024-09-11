@@ -26,8 +26,8 @@ public class PostController {
 
     @GetMapping("/{postId}")
     public ResponseEntity<Post> getPostByPostId(@PathVariable Long postId) {
-        Optional<Post> findPost = postService.getPostByPostId(postId);
-        return findPost.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        var post = postService.getPostByPostId(postId);
+        return ResponseEntity.ok(post);
     }
 
     @PostMapping
