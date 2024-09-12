@@ -1,9 +1,9 @@
 package com.fc_board.service;
 
 import com.fc_board.exception.post.PostNotFoundException;
-import com.fc_board.model.Post;
-import com.fc_board.model.PostPatchRequestBody;
-import com.fc_board.model.PostRequestBody;
+import com.fc_board.model.post.Post;
+import com.fc_board.model.post.PostPatchRequestBody;
+import com.fc_board.model.post.PostRequestBody;
 import com.fc_board.model.entity.PostEntity;
 import com.fc_board.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
