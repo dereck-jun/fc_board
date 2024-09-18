@@ -1,8 +1,8 @@
 package com.fc_board.controller;
 
-import com.fc_board.model.Post;
-import com.fc_board.model.PostPatchRequestBody;
-import com.fc_board.model.PostRequestBody;
+import com.fc_board.model.post.Post;
+import com.fc_board.model.post.PostPatchRequestBody;
+import com.fc_board.model.post.PostRequestBody;
 import com.fc_board.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
