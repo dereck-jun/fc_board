@@ -1,8 +1,9 @@
 package com.fc_board.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -16,18 +17,20 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 @Configuration
+@RequiredArgsConstructor
 public class WebConfig {
 
-    @Autowired
-    private JwtAuthenticationFilter jwtAuthenticationFilter;
-
-    @Autowired
-    private JwtExceptionFilter jwtExceptionFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtExceptionFilter jwtExceptionFilter;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors(Customizer.withDefaults())
-                .authorizeHttpRequests(requests -> requests.anyRequest().authenticated())
+                .authorizeHttpRequests(requests ->
+                        requests.requestMatchers(HttpMethod.POST, "/api/*/users")
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
