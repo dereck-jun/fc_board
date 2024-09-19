@@ -26,11 +26,11 @@ public class UserEntity implements UserDetails {
     @Column(name = "user_id")
     private Long id;
 
-    @Column
+    @Column(nullable = false, unique = true)
     @Setter
     private String username;
 
-    @Column
+    @Column(nullable = false)
     @Setter
     private String password;
 
