@@ -45,13 +45,13 @@ public class UserController {
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/{username}")
+    @PatchMapping("/{username}")
     public ResponseEntity<User> getUser(@PathVariable String username, @RequestBody UserPatchRequestBody requestBody, Authentication authentication) {
         var user = userService.updateUser(username, requestBody, (UserEntity) authentication.getPrincipal());
         return ResponseEntity.ok(user);
     }
 
-    @PatchMapping("/{username}")
+    @GetMapping("/{username}")
     public ResponseEntity<User> updateUser(@PathVariable String username) {
         var user = userService.getUser(username);
         return ResponseEntity.ok(user);

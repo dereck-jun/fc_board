@@ -1,8 +1,38 @@
-### User 회원가입
+### 회원가입
 POST http://localhost:8080/api/v1/users
 Content-Type: application/json
 
 {
-  "username": "dereck9",
+  "username": "dereck",
   "password": "password"
 }
+
+### 로그인
+POST http://localhost:8080/api/v1/users/authenticate
+Content-Type: application/json
+
+{
+  "username": "dereck",
+  "password": "password"
+}
+
+### 유저 쿼리 조회
+GET http://localhost:8080/api/v1/users?query=
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZXJlY2siLCJpYXQiOjE3MjY3NjE2MzgsImV4cCI6MTcyNjc3MjQzOH0.FD1F_V3JwQPVy0xXLBu8L6-Wu9UIQ_siIoqr_61W4js
+
+### 유저 단건 조회
+GET http://localhost:8080/api/v1/users/dereck
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZXJlY2siLCJpYXQiOjE3MjY3NjE2MzgsImV4cCI6MTcyNjc3MjQzOH0.FD1F_V3JwQPVy0xXLBu8L6-Wu9UIQ_siIoqr_61W4js
+
+### 유저 description 수정
+PATCH http://localhost:8080/api/v1/users/dereck
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZXJlY2siLCJpYXQiOjE3MjY3NjE2MzgsImV4cCI6MTcyNjc3MjQzOH0.FD1F_V3JwQPVy0xXLBu8L6-Wu9UIQ_siIoqr_61W4js
+Content-Type: application/json
+
+{
+  "description": ""
+}
+
+### 유저가 작성한 게시글 확인
+GET http://localhost:8080/api/v1/users/dereck/posts
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZXJlY2siLCJpYXQiOjE3MjY3NjE2MzgsImV4cCI6MTcyNjc3MjQzOH0.FD1F_V3JwQPVy0xXLBu8L6-Wu9UIQ_siIoqr_61W4js
