@@ -15,7 +15,9 @@ import java.util.Random;
 
 @Entity
 @Getter
-@Table(name = "\"user\"")
+@Table(name = "\"user\"", indexes = {
+        @Index(name = "user_username_idx", columnList = "username", unique = true)
+})
 @SQLDelete(sql = "update \"user\" set deleted_date_time = current_timestamp where user_id = ?")
 @SQLRestriction("deleted_date_time is null")
 @EqualsAndHashCode
@@ -39,6 +41,7 @@ public class UserEntity implements UserDetails {
     private String profile;
 
     @Column
+    @Setter
     private String description;
 
     @Column(nullable = false, updatable = false)

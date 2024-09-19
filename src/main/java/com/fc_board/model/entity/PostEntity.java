@@ -13,7 +13,9 @@ import java.time.ZonedDateTime;
 @Getter @Setter
 @SQLDelete(sql = "update post set deleted_date_time = current_timestamp where post_id = ?")
 @SQLRestriction("deleted_date_time is null")
-@Table(name = "post")
+@Table(name = "post", indexes = {
+        @Index(name = "post_user_id_idx", columnList = "user_id")
+})
 @EqualsAndHashCode
 public class PostEntity {
 
@@ -34,6 +36,14 @@ public class PostEntity {
     @Column(nullable = true)
     private ZonedDateTime deletedDateTime;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity user;
+
+    public void addUser(UserEntity user) {
+        this.user = user;
+    }
+
     @PrePersist
     private void prePersist() {
         this.createdDateTime = ZonedDateTime.now();
@@ -43,5 +53,12 @@ public class PostEntity {
     @PreUpdate
     private void preUpdate() {
         this.updatedDateTime = ZonedDateTime.now();
+    }
+
+    public static PostEntity of(String body, UserEntity currentUser) {
+        PostEntity post = new PostEntity();
+        post.setBody(body);
+        post.setUser(currentUser);
+        return post;
     }
 }
