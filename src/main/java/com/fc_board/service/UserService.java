@@ -1,10 +1,12 @@
 package com.fc_board.service;
 
 import com.fc_board.exception.user.UserAlreadyExistsException;
+import com.fc_board.exception.user.UserNotAllowedException;
 import com.fc_board.exception.user.UserNotFoundException;
 import com.fc_board.model.entity.UserEntity;
 import com.fc_board.model.user.User;
 import com.fc_board.model.user.UserAuthenticationResponse;
+import com.fc_board.model.user.UserPatchRequestBody;
 import com.fc_board.repository.UserRepository;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -47,5 +52,39 @@ public class UserService implements UserDetailsService {
         } else {
             throw new UserNotFoundException();
         }
+    }
+
+    public List<User> getUsers(String query) {
+        List<UserEntity> userEntities = new ArrayList<>();
+
+        if (query != null && !query.isBlank()) {
+            userEntities = userRepository.findByUsernameContaining(query);
+        } else {
+            userEntities = userRepository.findAll();
+        }
+
+        return userEntities.stream().map(User::from).toList();
+    }
+
+    public User getUser(String username) {
+        var userEntity = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+
+        return User.from(userEntity);
+    }
+
+    public User updateUser(String username, UserPatchRequestBody requestBody, UserEntity currentUser) {
+        var userEntity = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+
+        if (!userEntity.equals(currentUser)) {
+            throw new UserNotAllowedException();
+        }
+
+        if (requestBody.description() != null) {
+            userEntity.setDescription(requestBody.description());
+        }
+
+        return User.from(userRepository.save(userEntity));
     }
 }
