@@ -16,7 +16,7 @@ import java.util.Random;
 @Entity
 @Getter
 @Table(name = "\"user\"")
-@SQLDelete(sql = "update user set deleted_date_time = current_timestamp where user_id = ?")
+@SQLDelete(sql = "update \"user\" set deleted_date_time = current_timestamp where user_id = ?")
 @SQLRestriction("deleted_date_time is null")
 @EqualsAndHashCode
 public class UserEntity implements UserDetails {
@@ -54,7 +54,7 @@ public class UserEntity implements UserDetails {
         var userEntity = new UserEntity();
         userEntity.setUsername(username);
         userEntity.setPassword(password);
-        userEntity.setProfile("https://avatar.iran.liara.run/public/" + new Random().nextInt(100));
+        userEntity.setProfile("https://avatar.iran.liara.run/public/" + (new Random().nextInt(100) + 1));
         return userEntity;
     }
 
