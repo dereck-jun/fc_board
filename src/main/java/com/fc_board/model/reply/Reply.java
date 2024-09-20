@@ -1,26 +1,27 @@
-package com.fc_board.model.post;
+package com.fc_board.model.reply;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fc_board.model.entity.PostEntity;
+import com.fc_board.model.entity.ReplyEntity;
+import com.fc_board.model.post.Post;
 import com.fc_board.model.user.User;
 
 import java.time.ZonedDateTime;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public record Post(
-        Long postId,
+public record Reply(
+        Long replyId,
         String body,
-        Long repliesCount,
         User user,
+        Post post,
         ZonedDateTime createdDateTime,
         ZonedDateTime updatedDateTime
 ) {
-    public static Post from(PostEntity entity) {
-        return new Post(
+    public static Reply from(ReplyEntity entity) {
+        return new Reply(
                 entity.getId(),
                 entity.getBody(),
-                entity.getRepliesCount(),
                 User.from(entity.getUser()),
+                Post.from(entity.getPost()),
                 entity.getCreatedDateTime(),
                 entity.getUpdatedDateTime()
         );

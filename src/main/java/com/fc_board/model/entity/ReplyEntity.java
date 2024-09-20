@@ -11,24 +11,22 @@ import java.time.ZonedDateTime;
 
 @Entity
 @Getter @Setter
-@SQLDelete(sql = "update post set deleted_date_time = current_timestamp where post_id = ?")
+@SQLDelete(sql = "update reply set deleted_date_time = current_timestamp where post_id = ?")
 @SQLRestriction("deleted_date_time is null")
-@Table(name = "post", indexes = {
-        @Index(name = "post_user_id_idx", columnList = "user_id")
+@Table(name = "reply", indexes = {
+        @Index(name = "reply_user_id_idx", columnList = "user_id"),
+        @Index(name = "reply_post_id_idx", columnList = "post_id")
 })
 @EqualsAndHashCode
-public class PostEntity {
+public class ReplyEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id")
+    @Column(name = "reply_id")
     private Long id;
 
     @Column(columnDefinition = "TEXT")
     private String body;
-
-    @Column
-    private Long repliesCount = 0L;
 
     @Column(nullable = false, updatable = false)
     private ZonedDateTime createdDateTime;
@@ -43,8 +41,16 @@ public class PostEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    private PostEntity post;
+
     public void addUser(UserEntity user) {
         this.user = user;
+    }
+
+    public void addPost(PostEntity post) {
+        this.post = post;
     }
 
     @PrePersist
@@ -58,10 +64,11 @@ public class PostEntity {
         this.updatedDateTime = ZonedDateTime.now();
     }
 
-    public static PostEntity of(String body, UserEntity currentUser) {
-        PostEntity post = new PostEntity();
-        post.setBody(body);
-        post.addUser(currentUser);
-        return post;
+    public static ReplyEntity of(String body, UserEntity user, PostEntity post) {
+        ReplyEntity replyEntity = new ReplyEntity();
+        replyEntity.setBody(body);
+        replyEntity.addUser(user);
+        replyEntity.addPost(post);
+        return replyEntity;
     }
 }
