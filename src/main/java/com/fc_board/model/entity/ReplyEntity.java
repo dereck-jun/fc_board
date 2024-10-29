@@ -1,6 +1,7 @@
 package com.fc_board.model.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +11,8 @@ import org.hibernate.annotations.SQLRestriction;
 import java.time.ZonedDateTime;
 
 @Entity
-@Getter @Setter
+@Getter
+@Setter(AccessLevel.PRIVATE)
 @SQLDelete(sql = "update reply set deleted_date_time = current_timestamp where post_id = ?")
 @SQLRestriction("deleted_date_time is null")
 @Table(name = "reply", indexes = {
@@ -25,6 +27,7 @@ public class ReplyEntity {
     @Column(name = "reply_id")
     private Long id;
 
+    @Setter(AccessLevel.PUBLIC)
     @Column(columnDefinition = "TEXT")
     private String body;
 
@@ -34,7 +37,7 @@ public class ReplyEntity {
     @Column
     private ZonedDateTime updatedDateTime;
 
-    @Column(nullable = true)
+    @Column
     private ZonedDateTime deletedDateTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -45,12 +48,12 @@ public class ReplyEntity {
     @JoinColumn(name = "post_id")
     private PostEntity post;
 
-    public void addUser(UserEntity user) {
-        this.user = user;
-    }
-
-    public void addPost(PostEntity post) {
-        this.post = post;
+    public static ReplyEntity of(String body, UserEntity user, PostEntity post) {
+        ReplyEntity replyEntity = new ReplyEntity();
+        replyEntity.setBody(body);
+        replyEntity.setUser(user);
+        replyEntity.setPost(post);
+        return replyEntity;
     }
 
     @PrePersist
@@ -62,13 +65,5 @@ public class ReplyEntity {
     @PreUpdate
     private void preUpdate() {
         this.updatedDateTime = ZonedDateTime.now();
-    }
-
-    public static ReplyEntity of(String body, UserEntity user, PostEntity post) {
-        ReplyEntity replyEntity = new ReplyEntity();
-        replyEntity.setBody(body);
-        replyEntity.addUser(user);
-        replyEntity.addPost(post);
-        return replyEntity;
     }
 }
