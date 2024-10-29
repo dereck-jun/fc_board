@@ -13,7 +13,8 @@ public record Post(
         Long repliesCount,
         User user,
         ZonedDateTime createdDateTime,
-        ZonedDateTime updatedDateTime
+        ZonedDateTime updatedDateTime,
+        ZonedDateTime deletedDateTime
 ) {
     public static Post from(PostEntity entity) {
         return new Post(
@@ -22,7 +23,8 @@ public record Post(
                 entity.getRepliesCount(),
                 User.from(entity.getUser()),
                 entity.getCreatedDateTime(),
-                entity.getUpdatedDateTime()
+                entity.getUpdatedDateTime(),
+                entity.getDeletedDateTime()
         );
     }
 }

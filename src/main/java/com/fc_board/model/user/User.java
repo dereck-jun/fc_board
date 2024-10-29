@@ -9,7 +9,8 @@ public record User(Long userId,
                    String profile,
                    String description,
                    ZonedDateTime createdDateTime,
-                   ZonedDateTime updatedDateTime) {
+                   ZonedDateTime updatedDateTime,
+                   ZonedDateTime deletedDateTime) {
 
     public static User from(UserEntity entity) {
         return new User(
@@ -18,7 +19,8 @@ public record User(Long userId,
                 entity.getProfile(),
                 entity.getDescription(),
                 entity.getCreatedDateTime(),
-                entity.getUpdatedDateTime()
+                entity.getUpdatedDateTime(),
+                entity.getDeletedDateTime()
         );
     }
 }

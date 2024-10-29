@@ -14,7 +14,8 @@ public record Reply(
         User user,
         Post post,
         ZonedDateTime createdDateTime,
-        ZonedDateTime updatedDateTime
+        ZonedDateTime updatedDateTime,
+        ZonedDateTime deletedDateTime
 ) {
     public static Reply from(ReplyEntity entity) {
         return new Reply(
@@ -23,7 +24,8 @@ public record Reply(
                 User.from(entity.getUser()),
                 Post.from(entity.getPost()),
                 entity.getCreatedDateTime(),
-                entity.getUpdatedDateTime()
+                entity.getUpdatedDateTime(),
+                entity.getDeletedDateTime()
         );
     }
 }
