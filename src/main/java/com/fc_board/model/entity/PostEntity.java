@@ -27,9 +27,6 @@ public class PostEntity {
     @Column(columnDefinition = "TEXT")
     private String body;
 
-    @Column
-    private Long repliesCount = 0L;
-
     @Column(nullable = false, updatable = false)
     private ZonedDateTime createdDateTime;
 
@@ -61,7 +58,7 @@ public class PostEntity {
     public static PostEntity of(String body, UserEntity currentUser) {
         PostEntity post = new PostEntity();
         post.setBody(body);
-        post.addUser(currentUser);
+        post.setUser(currentUser);
         return post;
     }
 }
