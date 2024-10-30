@@ -60,7 +60,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public List<User> getUsers(String query) {
+    public List<User> getUsers(String query, UserEntity currentUser) {
         List<UserEntity> userEntities;
 
         if (query != null && !query.isBlank()) {
@@ -69,14 +69,16 @@ public class UserService implements UserDetailsService {
             userEntities = userRepository.findAll();
         }
 
-        return userEntities.stream().map(User::from).toList();
+        return userEntities.stream()
+                .map(userEntity -> getUserWithFollowingStatus(currentUser, userEntity))
+                .toList();
     }
 
-    public User getUser(String username) {
+    public User getUser(String username, UserEntity currentUser) {
         var userEntity = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
 
-        return User.from(userEntity);
+        return getUserWithFollowingStatus(currentUser, userEntity);
     }
 
     public User updateUser(String username, UserPatchRequestBody requestBody, UserEntity currentUser) {
@@ -116,7 +118,7 @@ public class UserService implements UserDetailsService {
 
         userRepository.saveAll(List.of(following, currentUser));
 
-        return User.from(following);
+        return User.from(following, true);
     }
 
     @Transactional
@@ -138,26 +140,32 @@ public class UserService implements UserDetailsService {
 
         userRepository.saveAll(List.of(following, currentUser));
 
-        return User.from(following);
+        return User.from(following, false);
     }
 
-    public List<User> getFollowersByUsername(String username) {
+    public List<User> getFollowersByUsername(String username, UserEntity currentUser) {
         var following = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
 
         var followEntities = followRepository.findByFollowing(following);
         return followEntities.stream()
-                .map(follow -> User.from(follow.getFollower()))
+                .map(follow -> getUserWithFollowingStatus(currentUser, follow.getFollower()))
                 .toList();
     }
 
-    public List<User> getFollowingsByUsername(String username) {
+    public List<User> getFollowingsByUsername(String username, UserEntity currentUser) {
         var follower = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
 
         var followEntities = followRepository.findByFollower(follower);
         return followEntities.stream()
-                .map(follow -> User.from(follow.getFollowing()))
+                .map(follow -> getUserWithFollowingStatus(currentUser, follow.getFollowing()))
                 .toList();
+    }
+
+    // 현재 로그인한 사용자(follower) 기준으로 검색한 대상(following)
+    private User getUserWithFollowingStatus(UserEntity currentUser, UserEntity userEntity) {
+        var isFollowing = followRepository.findByFollowerAndFollowing(currentUser, userEntity).isPresent();
+        return User.from(userEntity, isFollowing);
     }
 }

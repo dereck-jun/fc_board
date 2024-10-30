@@ -21,6 +21,7 @@ public class UserController {
     private final UserService userService;
     private final PostService postService;
 
+    // signUp & authenticate API
     @PostMapping
     public ResponseEntity<User> signUp(@Valid @RequestBody UserSignUpRequestBody request) {
         var user = userService.signUp(
@@ -39,21 +40,22 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    // user API
     @GetMapping
-    public ResponseEntity<List<User>> getUsers(@RequestParam(required = false) String query) {
-        var users = userService.getUsers(query);
+    public ResponseEntity<List<User>> getUsers(@RequestParam(required = false) String query, Authentication authentication) {
+        var users = userService.getUsers(query, (UserEntity) authentication.getPrincipal());
         return ResponseEntity.ok(users);
     }
 
-    @PatchMapping("/{username}")
-    public ResponseEntity<User> getUser(@PathVariable String username, @RequestBody UserPatchRequestBody requestBody, Authentication authentication) {
-        var user = userService.updateUser(username, requestBody, (UserEntity) authentication.getPrincipal());
+    @GetMapping("/{username}")
+    public ResponseEntity<User> getUser(@PathVariable String username, Authentication authentication) {
+        var user = userService.getUser(username, (UserEntity) authentication.getPrincipal());
         return ResponseEntity.ok(user);
     }
 
-    @GetMapping("/{username}")
-    public ResponseEntity<User> updateUser(@PathVariable String username) {
-        var user = userService.getUser(username);
+    @PatchMapping("/{username}")
+    public ResponseEntity<User> updateUser(@PathVariable String username, @RequestBody UserPatchRequestBody requestBody, Authentication authentication) {
+        var user = userService.updateUser(username, requestBody, (UserEntity) authentication.getPrincipal());
         return ResponseEntity.ok(user);
     }
 
@@ -63,6 +65,7 @@ public class UserController {
         return ResponseEntity.ok(posts);
     }
 
+    // follow API
     @PostMapping("/{username}/follows")
     public ResponseEntity<User> follow(@PathVariable String username, Authentication authentication) {
         var user = userService.follow(username, (UserEntity) authentication.getPrincipal());
@@ -76,14 +79,14 @@ public class UserController {
     }
 
     @GetMapping("/{username}/followers")
-    public ResponseEntity<List<User>> getFollowersByUser(@PathVariable String username) {
-        var followers = userService.getFollowersByUsername(username);
+    public ResponseEntity<List<User>> getFollowersByUser(@PathVariable String username, Authentication authentication) {
+        var followers = userService.getFollowersByUsername(username, (UserEntity) authentication.getPrincipal());
         return ResponseEntity.ok(followers);
     }
 
     @GetMapping("/{username}/followings")
-    public ResponseEntity<List<User>> getFollowingsByUser(@PathVariable String username) {
-        var followings = userService.getFollowingsByUsername(username);
+    public ResponseEntity<List<User>> getFollowingsByUser(@PathVariable String username, Authentication authentication) {
+        var followings = userService.getFollowingsByUsername(username, (UserEntity) authentication.getPrincipal());
         return ResponseEntity.ok(followings);
     }
 
