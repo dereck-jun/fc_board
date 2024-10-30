@@ -63,4 +63,16 @@ public class UserController {
         return ResponseEntity.ok(posts);
     }
 
+    @PostMapping("/{username}/follows")
+    public ResponseEntity<User> follow(@PathVariable String username, Authentication authentication) {
+        User user = userService.follow(username, (UserEntity) authentication.getPrincipal());
+        return ResponseEntity.ok(user);
+    }
+
+    @DeleteMapping("/{username}/follows")
+    public ResponseEntity<User> unFollow(@PathVariable String username, Authentication authentication) {
+        User user = userService.unFollow(username, (UserEntity) authentication.getPrincipal());
+        return ResponseEntity.ok(user);
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.fc_board.model.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,7 +15,7 @@ import java.util.Collection;
 import java.util.Random;
 
 @Entity
-@Getter
+@Getter @Setter(AccessLevel.PRIVATE)
 @Table(name = "\"user\"", indexes = {
         @Index(name = "user_username_idx", columnList = "username", unique = true)
 })
@@ -29,20 +30,25 @@ public class UserEntity implements UserDetails {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    @Setter
     private String username;
 
     @Column(nullable = false)
-    @Setter
     private String password;
 
     @Column
-    @Setter
     private String profile;
 
     @Column
-    @Setter
+    @Setter(AccessLevel.PUBLIC)
     private String description;
+
+    @Column
+    @Setter(AccessLevel.PUBLIC)
+    private Long followersCount = 0L;
+
+    @Column
+    @Setter(AccessLevel.PUBLIC)
+    private Long followingsCount = 0L;
 
     @Column(nullable = false, updatable = false)
     private ZonedDateTime createdDateTime;
