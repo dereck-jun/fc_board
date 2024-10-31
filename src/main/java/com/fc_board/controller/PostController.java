@@ -4,7 +4,9 @@ import com.fc_board.model.entity.UserEntity;
 import com.fc_board.model.post.Post;
 import com.fc_board.model.post.PostPatchRequestBody;
 import com.fc_board.model.post.PostRequestBody;
+import com.fc_board.model.user.LikedUser;
 import com.fc_board.service.PostService;
+import com.fc_board.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,18 +23,19 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<Post>> getPosts() {
+    public ResponseEntity<List<Post>> getPosts(Authentication authentication) {
         log.info("GET /api/v1/posts");
-        var posts = postService.getPosts();
+        var posts = postService.getPosts((UserEntity) authentication.getPrincipal());
         return ResponseEntity.ok(posts);
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<Post> getPostByPostId(@PathVariable Long postId) {
+    public ResponseEntity<Post> getPostByPostId(@PathVariable Long postId, Authentication authentication) {
         log.info("GET /api/v1/posts/{}", postId);
-        var post = postService.getPostByPostId(postId);
+        var post = postService.getPostByPostId(postId, (UserEntity) authentication.getPrincipal());
         return ResponseEntity.ok(post);
     }
 
@@ -61,6 +64,12 @@ public class PostController {
     public ResponseEntity<Post> toggleLike(@PathVariable Long postId, Authentication authentication) {
         Post post = postService.toggleLike(postId, (UserEntity) authentication.getPrincipal());
         return ResponseEntity.ok(post);
+    }
+
+    @GetMapping("/{postId}/liked-users") // 로그인한 유저의 팔로우 상태값을 알기 위함
+    public ResponseEntity<List<LikedUser>> getLikedUsersByPostId(@PathVariable Long postId, Authentication authentication) {
+        var likedUsers = userService.getLikedUsersByPostId(postId, (UserEntity) authentication.getPrincipal());
+        return ResponseEntity.ok(likedUsers);
     }
 
 }

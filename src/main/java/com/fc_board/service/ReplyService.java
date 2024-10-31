@@ -3,6 +3,7 @@ package com.fc_board.service;
 import com.fc_board.exception.post.PostNotFoundException;
 import com.fc_board.exception.reply.ReplyNotFoundException;
 import com.fc_board.exception.user.UserNotAllowedException;
+import com.fc_board.exception.user.UserNotFoundException;
 import com.fc_board.model.entity.PostEntity;
 import com.fc_board.model.entity.ReplyEntity;
 import com.fc_board.model.entity.UserEntity;
@@ -11,6 +12,7 @@ import com.fc_board.model.reply.ReplyPatchRequestBody;
 import com.fc_board.model.reply.ReplyRequestBody;
 import com.fc_board.repository.PostRepository;
 import com.fc_board.repository.ReplyRepository;
+import com.fc_board.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ public class ReplyService {
 
     private final ReplyRepository replyRepository;
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
     public List<Reply> getRepliesByPostId(Long postId) {
         PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new PostNotFoundException(postId));
@@ -71,5 +74,13 @@ public class ReplyService {
 
         postEntity.setRepliesCount(Math.max(0, postEntity.getRepliesCount() - 1));
         postRepository.save(postEntity);
+    }
+
+    public List<Reply> getRepliesByUser(String username) {
+        var userEntity = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
+
+        var replyEntities = replyRepository.findByUser(userEntity);
+        return replyEntities.stream().map(Reply::from).toList();
     }
 }
