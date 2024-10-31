@@ -50,7 +50,7 @@ public class UserEntity implements UserDetails {
     @Column
     private ZonedDateTime updatedDateTime;
 
-    @Column(nullable = true)
+    @Column
     private ZonedDateTime deletedDateTime;
 
     public static UserEntity of(String username, String password) {

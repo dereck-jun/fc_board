@@ -1,13 +1,9 @@
 package com.fc_board.controller;
 
 import com.fc_board.model.entity.UserEntity;
-import com.fc_board.model.post.Post;
-import com.fc_board.model.post.PostPatchRequestBody;
-import com.fc_board.model.post.PostRequestBody;
 import com.fc_board.model.reply.Reply;
 import com.fc_board.model.reply.ReplyPatchRequestBody;
 import com.fc_board.model.reply.ReplyRequestBody;
-import com.fc_board.service.PostService;
 import com.fc_board.service.ReplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +20,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReplyController {
 
-    private final PostService postService;
     private final ReplyService replyService;
 
     @GetMapping
