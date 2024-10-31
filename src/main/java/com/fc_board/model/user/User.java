@@ -12,7 +12,6 @@ public record User(Long userId,
                    Long followingsCount,
                    ZonedDateTime createdDateTime,
                    ZonedDateTime updatedDateTime,
-                   ZonedDateTime deletedDateTime,
                    Boolean isFollowing
 ) {
 
@@ -26,7 +25,6 @@ public record User(Long userId,
                 entity.getFollowingsCount(),
                 entity.getCreatedDateTime(),
                 entity.getUpdatedDateTime(),
-                entity.getDeletedDateTime(),
                 null
         );
     }
@@ -41,7 +39,6 @@ public record User(Long userId,
                 entity.getFollowingsCount(),
                 entity.getCreatedDateTime(),
                 entity.getUpdatedDateTime(),
-                entity.getDeletedDateTime(),
                 isFollowing
         );
     }

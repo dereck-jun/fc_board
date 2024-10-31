@@ -2,8 +2,10 @@ package com.fc_board.controller;
 
 import com.fc_board.model.entity.UserEntity;
 import com.fc_board.model.post.Post;
+import com.fc_board.model.reply.Reply;
 import com.fc_board.model.user.*;
 import com.fc_board.service.PostService;
+import com.fc_board.service.ReplyService;
 import com.fc_board.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ public class UserController {
 
     private final UserService userService;
     private final PostService postService;
+    private final ReplyService replyService;
 
     // signUp & authenticate API
     @PostMapping
@@ -79,7 +82,7 @@ public class UserController {
     }
 
     @GetMapping("/{username}/followers")
-    public ResponseEntity<List<User>> getFollowersByUser(@PathVariable String username, Authentication authentication) {
+    public ResponseEntity<List<Follower>> getFollowersByUser(@PathVariable String username, Authentication authentication) {
         var followers = userService.getFollowersByUsername(username, (UserEntity) authentication.getPrincipal());
         return ResponseEntity.ok(followers);
     }
@@ -88,6 +91,18 @@ public class UserController {
     public ResponseEntity<List<User>> getFollowingsByUser(@PathVariable String username, Authentication authentication) {
         var followings = userService.getFollowingsByUsername(username, (UserEntity) authentication.getPrincipal());
         return ResponseEntity.ok(followings);
+    }
+
+    @GetMapping("/{username}/replies")
+    public ResponseEntity<List<Reply>> getRepliesByUser(@PathVariable String username) {
+        var replies = replyService.getRepliesByUser(username);
+        return ResponseEntity.ok(replies);
+    }
+
+    @GetMapping("/{username}/liked-users")
+    public ResponseEntity<List<LikedUser>> getLikedUsersByUser(@PathVariable String username, Authentication authentication) {
+        var likedUsers = userService.getLikedUsersByUser(username, (UserEntity) authentication.getPrincipal());
+        return ResponseEntity.ok(likedUsers);
     }
 
 }
